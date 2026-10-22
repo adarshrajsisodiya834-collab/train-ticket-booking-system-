@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Booking - TTBS{% endblock %}
+{% block content %}
+    <div class="form-card">
+        <p class="eyebrow">PASSENGER DETAILS</p>
+        <h1>Book {{ train['train_number'] }} - {{ train['train_name'] }}</h1>
+        <p>{{ train['source'] }} → {{ train['destination'] }} · {{ journey_date }}</p>
+
+        <form method="post" action="{{ url_for('confirm_booking') }}">
+            <input type="hidden" name="train_id" value="{{ train['id'] }}">
+            <input type="hidden" name="journey_date" value="{{ journey_date }}">
+
+            <label>
+                Class
+                <select name="travel_class" id="travel-class" required>
+                    <option value="sleeper"
+                            {% if travel_class == 'sleeper' %}selected{% endif %}>Sleeper (SL) — ₹{{ fares['sleeper'] }}</option>
+                    <option value="3A"
+                            {% if travel_class == '3A' %}selected{% endif %}>AC 3 Tier (3A) — ₹{{ fares['3A'] }}</option>
+                    <option value="2A"
+                            {% if travel_class == '2A' %}selected{% endif %}>AC 2 Tier (2A) — ₹{{ fares['2A'] }}</option>
+                    <option value="1A"
+                            {% if travel_class == '1A' %}selected{% endif %}>First AC (1A) — ₹{{ fares['1A'] }}</option>
+                </select>
+            </label>
+
+            <div class="fare-notice">Selected fare: <strong id="selected-fare">₹{{ fares.get(travel_class, fares['sleeper']) }}</strong> per passenger</div>
+
+            <label>
+                Passenger Name<input name="passenger_name" required>
+            </label>
+            <label>
+                Age<input type="number" name="passenger_age" min="1" max="120" required>
+            </label>
+            <label>
+                Gender<select name="passenger_gender">
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+                </select>
+            </label>
+            <button>Confirm Booking</button>
+        </form>
+    </div>
+    <script>
+const fares = {{ fares|tojson }};
+const classSelect = document.getElementById('travel-class');
+const fareText = document.getElementById('selected-fare');
+classSelect.addEventListener('change', () => {
+    fareText.textContent = '₹' + fares[classSelect.value];
+});
+    </script>
+{% endblock %}

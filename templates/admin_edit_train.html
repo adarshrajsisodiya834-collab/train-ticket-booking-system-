@@ -1,0 +1,57 @@
+﻿{% extends "base.html" %}
+{% block title %}
+Edit Train - TTBS
+{% endblock %}
+{% block content %}
+    <div class="form-card">
+        <div class="card-header">
+            <div>
+                <p class="eyebrow">
+                    TRAIN MANAGEMENT
+                </p>
+                <h1>
+                    Edit Train
+                </h1>
+            </div>
+            <a href="/admin/dashboard" class="button secondary">Back</a>
+        </div>
+        <form method="post" class="form-grid">
+            <label>
+                Train Number<input name="train_number" value="{{ train['train_number'] }}" required>
+            </label>
+            <label>
+                Train Name<input name="train_name" value="{{ train['train_name'] }}" required>
+            </label>
+            <label>
+                Source<input name="source" value="{{ train['source'] }}" required>
+            </label>
+            <label>
+                Destination<input name="destination" value="{{ train['destination'] }}" required>
+            </label>
+            <label>
+                Departure<input type="time" name="departure" value="{{ train['departure'] }}" required>
+            </label>
+            <label>
+                Arrival<input type="time" name="arrival" value="{{ train['arrival'] }}" required>
+            </label>
+            <label>
+                Duration<input name="duration" value="{{ train['duration'] }}" required>
+            </label>
+            <label>
+                Sleeper Seats<input type="number" name="sleeper_seats" value="{{ train['sleeper_seats'] }}" min="0" required>
+            </label>
+            <label>
+                3A Seats<input type="number" name="ac3_seats" value="{{ train['ac3_seats'] }}" min="0" required>
+            </label>
+            <label>
+                2A Seats<input type="number" name="ac2_seats" value="{{ train['ac2_seats'] }}" min="0" required>
+            </label>
+            <label>
+                1A Seats<input type="number" name="ac1_seats" value="{{ train['ac1_seats'] }}" min="0" required>
+            </label>
+            <button>
+                Save Changes
+            </button>
+        </form>
+    </div>
+{% endblock %}

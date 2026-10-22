@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}TTBS - Home{% endblock %}
+{% block content %}
+    <section class="hero">
+        <div>
+            <p class="eyebrow">TRAIN TICKETING PROTOTYPE</p>
+            <h1>Book your journey with TTBS.</h1>
+            <p class="hero-text">Search trains, compare fares, check routes, follow running status and manage your bookings.</p>
+        </div>
+    </section>
+    <section class="search-card" id="search">
+        <h2>Search Trains</h2>
+        <form action="{{ url_for('trains') }}" method="get" class="search-grid">
+            <label>
+                From<input name="from" placeholder="Mumbai Central" required>
+            </label>
+            <label>
+                To<input name="to" placeholder="New Delhi" required>
+            </label>
+            <label>
+                Date<input type="date" name="date" required>
+            </label>
+            <label>
+                Class
+                <select name="class">
+                    <option value="all">All Classes</option>
+                    <option value="sleeper">Sleeper (SL)</option>
+                    <option value="3A">AC 3 Tier (3A)</option>
+                    <option value="2A">AC 2 Tier (2A)</option>
+                    <option value="1A">First AC (1A)</option>
+                </select>
+            </label>
+            <button type="submit">Search Trains</button>
+        </form>
+        <div class="quick-actions">
+            <a href="{{ url_for('running_status') }}" class="quick-action">Running Status</a>
+            <a href="{{ url_for('pnr_status') }}" class="quick-action">PNR Status</a>
+        </div>
+    </section>
+{% endblock %}

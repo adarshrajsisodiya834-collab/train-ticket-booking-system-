@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}
+Ticket - TTBS
+{% endblock %}
+{% block content %}
+    <div class="ticket-card">
+        <div class="ticket-head">
+            <div>
+                <p class="eyebrow">
+                    CONFIRMED TICKET
+                </p>
+                <h1>
+                    {{ booking['train_number'] }} · {{ booking['train_name'] }}
+                </h1>
+            </div>
+            <strong>PNR {{ booking['pnr'] }}</strong>
+        </div>
+        <div class="ticket-route">
+            <div>
+                <strong>{{ booking['source'] }}</strong><span>{{ booking['departure'] }}</span>
+            </div>
+            <div>
+                →
+            </div>
+            <div>
+                <strong>{{ booking['destination'] }}</strong><span>{{ booking['arrival'] }}</span>
+            </div>
+        </div>
+        <div class="detail-grid">
+            <div>
+                <span>Passenger</span><strong>{{ booking['name'] }}</strong>
+            </div>
+            <div>
+                <span>Age / Gender</span><strong>{{ booking['age'] }} / {{ booking['gender'] }}</strong>
+            </div>
+            <div>
+                <span>Seat</span><strong>{{ booking['seat_number'] }}</strong>
+            </div>
+            <div>
+                <span>Class</span><strong>{{ booking['travel_class'] }}</strong>
+            </div>
+            <div>
+                <span>Journey Date</span><strong>{{ booking['journey_date'] }}</strong>
+            </div>
+            <div>
+                <span>Fare</span><strong>₹{{ booking['total_fare'] }}</strong>
+            </div>
+        </div>
+    </div>
+{% endblock %}

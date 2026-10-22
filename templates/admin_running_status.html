@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}
+Admin Running Status - TTBS
+{% endblock %}
+{% block content %}
+    <div class="admin-top">
+        <div>
+            <p class="eyebrow">
+                OPERATIONS
+            </p>
+            <h1>
+                Running Status
+            </h1>
+            <p>
+                Set only operational overrides; position and ETA are calculated from the route timetable.
+            </p>
+        </div>
+    </div>
+    <div class="admin-tabs">
+        <a href="/admin/dashboard">Overview</a><a class="active" href="/admin/running-status?date={{ journey_date }}">Running Status</a><a href="/admin/routes">Routes</a><a href="/admin/bookings">Bookings</a><a href="/admin/add-train">Add Train</a>
+    </div>
+    <div class="date-filter">
+        <form method="get">
+            <label>
+                Journey Date<input type="date" name="date" value="{{ journey_date }}">
+            </label>
+            <button>
+                Load
+            </button>
+        </form>
+    </div>
+    <div class="ops-list">
+        {% for row in rows %}
+            <div class="ops-card">
+                <div class="ops-summary">
+                    <div>
+                        <strong>{{ row['train']['train_number'] }}</strong><span>{{ row['train']['train_name'] }}</span>
+                    </div>
+                    <span class="badge {{ row['display_state']|lower }}">{{ row['display_state'].replace('_', ' ') }}</span>
+                    <div>
+                        <small>Current</small><strong>
+                        {% if row["position"]["state"]=="RUNNING" %}
+                        Between {{ row['position']['current_station']['station_name'] }} and {{ row['position']['next_station']['station_name'] }}
+                        {% elif row["position"]["current_station"] %}
+                        {{ row['position']['current_station']['station_name'] }}
+                        {% else %}
+                        —
+                        {% endif %}
+                        </strong>
+                    </div>
+                    <div>
+                        <small>Next</small><strong>{{ row['position']['next_station']['station_name'] if row['position']['next_station'] else '—' }}</strong>
+                    </div>
+                    <div>
+                        <small>ETA</small><strong>{{ row['position']['eta'] or '—' }}</strong>
+                    </div>
+                </div>
+                <form method="post" class="ops-form">
+                    <input type="hidden" name="train_id" value="{{ row['train']['id'] }}"><input type="hidden" name="journey_date" value="{{ journey_date }}">
+                    <label>
+                        Status
+                        <select name="status">
+                            <option value="RUNNING" {% if row['status'] and row['status']['status']=='RUNNING' %}selected{% endif %}>
+                                Running
+                            </option>
+                            <option value="DELAYED" {% if row['status'] and row['status']['status']=='DELAYED' %}selected{% endif %}>
+                                Delayed
+                            </option>
+                            <option value="AT_STATION" {% if row['status'] and row['status']['status']=='AT_STATION' %}selected{% endif %}>
+                                At Station
+                            </option>
+                            <option value="ARRIVED" {% if row['status'] and row['status']['status']=='ARRIVED' %}selected{% endif %}>
+                                Arrived
+                            </option>
+                            <option value="CANCELLED" {% if row['status'] and row['status']['status']=='CANCELLED' %}selected{% endif %}>
+                                Cancelled
+                            </option>
+                        </select>
+                    </label>
+                    <label>
+                        Current Station
+                        <select name="current_station_id">
+                            <option value="">
+                                Automatic
+                            </option>
+                            {% for s in row['stations'] %}
+                                <option value="{{ s['id'] }}" {% if row['status'] and row['status']['current_station_id']==s['id'] %}selected{% endif %}>
+                                    {{ s['station_name'] }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label>
+                        Delay (minutes)<input type="number" min="0" name="delay_minutes" value="{{ row['status']['delay_minutes'] if row['status'] else 0 }}">
+                    </label>
+                    <button>
+                        Update
+                    </button>
+                </form>
+                {% if row["status"] %}
+                    <div class="last-updated">
+                        Last updated: {{ row['status']['last_updated'] }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

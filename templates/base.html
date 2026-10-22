@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}TTBS{% endblock %}</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="header-inner">
+                <a class="brand" href="{{ url_for('home') }}">TTBS</a>
+                <nav>
+                    <a href="{{ url_for('home') }}">Home</a>
+                    <a href="{{ url_for('home') }}#search">Search Trains</a>
+                    <a href="{{ url_for('running_status') }}">Running Status</a>
+                    <a href="{{ url_for('pnr_status') }}">PNR Status</a>
+                    {% if session.get("user_id") %}
+                        <a href="{{ url_for('my_bookings') }}">My Bookings</a>
+                        <a href="{{ url_for('logout') }}">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}">Login</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </header>
+        <main class="page-wrap">
+            {% block content %}{% endblock %}
+        </main>
+    </body>
+</html>

@@ -1,0 +1,40 @@
+﻿{% extends "base.html" %}
+{% block title %}Edit Station - TTBS{% endblock %}
+{% block content %}
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">TIMETABLE MANAGEMENT</p>
+            <h1>Edit Station</h1>
+            <p>{{ train["train_number"] }} - {{ train["train_name"] }}</p>
+        </div>
+        <a class="button secondary"
+           href="{{ url_for('admin_routes', train_id=train['id']) }}">Back to Route</a>
+    </div>
+    <div class="form-card">
+        <form method="post" class="form-grid">
+            <label>
+                Station Name
+                <input name="station_name" value="{{ station['station_name'] }}" required>
+            </label>
+            <label>
+                Stop Order
+                <input type="number"
+                       name="stop_order"
+                       min="1"
+                       value="{{ station['stop_order'] }}"
+                       required>
+            </label>
+            <label>
+                Arrival
+                <input type="time" name="arrival" value="{{ station['arrival'] or '' }}">
+            </label>
+            <label>
+                Departure
+                <input type="time" name="departure" value="{{ station['departure'] or '' }}">
+            </label>
+            <div>
+                <button type="submit">Save Station</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

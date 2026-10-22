@@ -1,0 +1,28 @@
+﻿{% extends "base.html" %}
+{% block title %}
+Register - TTBS
+{% endblock %}
+{% block content %}
+    <div class="auth-card">
+        <h1>
+            Create Account
+        </h1>
+        <form method="post">
+            <label>
+                Name<input name="name" required>
+            </label>
+            <label>
+                Email<input type="email" name="email" required>
+            </label>
+            <label>
+                Password<input type="password" name="password" required>
+            </label>
+            <button>
+                Create Account
+            </button>
+        </form>
+        <p>
+            Already registered? <a href="/login">Login</a>
+        </p>
+    </div>
+{% endblock %}

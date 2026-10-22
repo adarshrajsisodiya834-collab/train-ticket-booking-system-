@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}
+PNR Status - TTBS
+{% endblock %}
+{% block content %}
+    <div class="search-card">
+        <h2>
+            Check PNR Status
+        </h2>
+        <form method="post" class="inline-search">
+            <input name="pnr" placeholder="Enter 10-digit PNR" value="{{ request.form.get('pnr', '') }}" required>
+            <button>
+                Check PNR
+            </button>
+        </form>
+    </div>
+    {% if booking %}
+        <div class="detail-card">
+            <div class="status-title">
+                <div>
+                    <p class="eyebrow">
+                        PNR {{ booking['pnr'] }}
+                    </p>
+                    <h1>
+                        {{ booking['train_number'] }} - {{ booking['train_name'] }}
+                    </h1>
+                </div>
+                <span class="badge {{ booking['status']|lower }}">{{ booking['status'] }}</span>
+            </div>
+            <p>
+                {{ booking['source'] }} → {{ booking['destination'] }} · {{ booking['journey_date'] }} · {{ booking['travel_class'] }}
+            </p>
+            <h2>
+                Passenger
+            </h2>
+            {% for p in passengers %}
+                <div class="passenger-row">
+                    <strong>{{ p['name'] }}</strong><span>{{ p['age'] }} / {{ p['gender'] }}</span><span>Seat {{ p['seat_number'] or '—' }}</span>
+                </div>
+            {% endfor %}
+            <p class="fare">
+                Total Fare: ₹{{ booking['total_fare'] }}
+            </p>
+        </div>
+    {% elif request.method == "POST" %}
+        <div class="empty-card">
+            <h2>
+                PNR not found
+            </h2>
+            <p>
+                This prototype only checks PNRs created by TTBS.
+            </p>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% block title %}
+Admin Dashboard - TTBS
+{% endblock %}
+{% block content %}
+    <div class="admin-top">
+        <div>
+            <p class="eyebrow">
+                TTBS OPERATIONS
+            </p>
+            <h1>
+                Admin Dashboard
+            </h1>
+            <p>
+                Operational overview for {{ journey_date }}
+            </p>
+        </div>
+        <a class="button secondary" href="/admin/logout">Logout</a>
+    </div>
+    <div class="admin-tabs">
+        <a class="active" href="/admin/dashboard">Overview</a><a href="/admin/running-status?date={{ journey_date }}">Running Status</a><a href="/admin/routes">Routes</a><a href="/admin/bookings">Bookings</a><a href="/admin/add-train">Add Train</a>
+    </div>
+    <div class="stat-cards">
+        <div>
+            <span>Total Trains</span><strong>{{ total_trains }}</strong>
+        </div>
+        <div>
+            <span>Running</span><strong>{{ counts.get('RUNNING',0) + counts.get('AT_STATION',0) }}</strong>
+        </div>
+        <div>
+            <span>Delayed</span><strong>{{ counts.get('DELAYED',0) }}</strong>
+        </div>
+        <div>
+            <span>Cancelled</span><strong>{{ counts.get('CANCELLED',0) }}</strong>
+        </div>
+        <div>
+            <span>Bookings</span><strong>{{ total_bookings }}</strong>
+        </div>
+    </div>
+    <div class="table-card">
+        <div class="card-header">
+            <div>
+                <h2>
+                    Operational Status
+                </h2>
+                <p>
+                    Current timetable-based position with admin overrides.
+                </p>
+            </div>
+            <a class="button secondary" href="/admin/running-status?date={{ journey_date }}">Manage Status</a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Train
+                    </th>
+                    <th>
+                        Route
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                        Current / Position
+                    </th>
+                    <th>
+                        Next Station
+                    </th>
+                    <th>
+                        ETA
+                    </th>
+                    <th>
+                        Delay
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in operations %}
+                    <tr>
+                        <td>
+                            <strong>{{ row['train']['train_number'] }}</strong><br><small>{{ row['train']['train_name'] }}</small>
+                        </td>
+                        <td>
+                            {{ row['train']['source'] }} → {{ row['train']['destination'] }}
+                        </td>
+                        <td>
+                            <span class="badge status-badge {{ row['display_state']|lower }}">{{ row['display_state'].replace('_',' ') }}</span>
+                        </td>
+                        <td>
+                            {{ row['current_name'] }}
+                        </td>
+                        <td>
+                            {{ row['next_name'] }}
+                        </td>
+                        <td>
+                            {{ row['position']['eta'] or '—' }}
+                        </td>
+                        <td>
+                            {% if row['delay'] > 0 %}
+                            +{{ row['delay'] }} min
+                            {% else %}
+                            —
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="table-card">
+        <div class="card-header">
+            <h2>
+                Train Management
+            </h2>
+            <a class="button" href="/admin/add-train">+ Add Train</a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Train
+                    </th>
+                    <th>
+                        Route
+                    </th>
+                    <th>
+                        Departure
+                    </th>
+                    <th>
+                        Arrival
+                    </th>
+                    <th>
+                        Seats
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for train in trains %}
+                    <tr>
+                        <td>
+                            <strong>{{ train['train_number'] }}</strong><br><small>{{ train['train_name'] }}</small>
+                        </td>
+                        <td>
+                            {{ train['source'] }} → {{ train['destination'] }}
+                        </td>
+                        <td>
+                            {{ train['departure'] }}
+                        </td>
+                        <td>
+                            {{ train['arrival'] }}
+                        </td>
+                        <td>
+                            SL {{ train['sleeper_seats'] }} · 3A {{ train['ac3_seats'] }} · 2A {{ train['ac2_seats'] }} · 1A {{ train['ac1_seats'] }}
+                        </td>
+                        <td>
+                            <a class="button small secondary" href="/admin/edit-train/{{ train['id'] }}">Edit</a> <a class="button small secondary" href="/admin/routes?train_id={{ train['id'] }}">Route</a> <a class="button small danger" href="/admin/delete-train/{{ train['id'] }}" onclick="return confirm('Delete this train?')">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

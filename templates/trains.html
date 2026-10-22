@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Search Trains - TTBS{% endblock %}
+{% block content %}
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">SEARCH RESULTS</p>
+            <h1>{{ source }} → {{ destination }}</h1>
+            <p>{{ journey_date or 'Date not selected' }} · {% if travel_class == "all" %}All Classes{% else %}{{ class_labels.get(travel_class, travel_class) }}{% endif %}</p>
+        </div>
+        <a class="button secondary" href="{{ url_for('home') }}#search">New Search</a>
+    </div>
+
+    {% if trains %}
+        <div class="train-list">
+            {% for train in trains %}
+                <div class="train-card">
+                    <div class="train-main">
+                        <div>
+                            <span class="train-number">{{ train['train_number'] }}</span>
+                            <h2>{{ train['train_name'] }}</h2>
+                            <p>{{ train['source'] }} → {{ train['destination'] }}</p>
+                        </div>
+                        <div class="time-block"><strong>{{ train['departure'] }}</strong><span>{{ train['source'] }}</span></div>
+                        <div class="route-line"><span></span><small>{{ train['duration'] }}</small><span></span></div>
+                        <div class="time-block"><strong>{{ train['arrival'] }}</strong><span>{{ train['destination'] }}</span></div>
+                    </div>
+
+                    <div class="fare-grid">
+                        <div class="fare-box {% if travel_class == 'sleeper' %}selected{% endif %}"><span>SL</span><strong>₹{{ fares['sleeper'] }}</strong><small>{{ train['sleeper_seats'] }} seats</small></div>
+                        <div class="fare-box {% if travel_class == '3A' %}selected{% endif %}"><span>3A</span><strong>₹{{ fares['3A'] }}</strong><small>{{ train['ac3_seats'] }} seats</small></div>
+                        <div class="fare-box {% if travel_class == '2A' %}selected{% endif %}"><span>2A</span><strong>₹{{ fares['2A'] }}</strong><small>{{ train['ac2_seats'] }} seats</small></div>
+                        <div class="fare-box {% if travel_class == '1A' %}selected{% endif %}"><span>1A</span><strong>₹{{ fares['1A'] }}</strong><small>{{ train['ac1_seats'] }} seats</small></div>
+                    </div>
+
+                    <div class="availability-row">
+                        <a class="button secondary"
+                           href="{{ url_for('train_route', train_id=train['id'], **{'from': source, 'to': destination, 'date': journey_date, 'class': travel_class}) }}">View Route & Timings</a>
+                        {% if journey_date %}
+                            <a class="button"
+                               href="{{ url_for('book', train_id=train['id'], date=journey_date, **{'class': travel_class}) }}">Book</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-card">
+            <h2>No trains found</h2>
+            <p>No TTBS train currently matches <strong>{{ source }} → {{ destination }}</strong>.</p>
+            <a class="button" href="{{ url_for('home') }}#search">Search Again</a>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}
+Admin Routes - TTBS
+{% endblock %}
+{% block content %}
+    <div class="admin-top">
+        <div>
+            <p class="eyebrow">
+                TIMETABLE MANAGEMENT
+            </p>
+            <h1>
+                Routes & Timings
+            </h1>
+            <p>
+                Manage the station sequence used by search and running status.
+            </p>
+        </div>
+    </div>
+    <div class="admin-tabs">
+        <a href="/admin/dashboard">Overview</a><a href="/admin/running-status">Running Status</a><a class="active" href="/admin/routes">Routes</a><a href="/admin/bookings">Bookings</a><a href="/admin/add-train">Add Train</a>
+    </div>
+    <div class="route-selector">
+        <form method="get">
+            <label>
+                Select Train
+                <select name="train_id" onchange="this.form.submit()">
+                    {% for t in trains %}
+                        <option value="{{ t['id'] }}" {% if selected_train and selected_train['id']==t['id'] %}selected{% endif %}>
+                            {{ t['train_number'] }} - {{ t['train_name'] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+        </form>
+    </div>
+    {% if selected_train %}
+        <div class="table-card">
+            <div class="card-header">
+                <div>
+                    <h2>
+                        {{ selected_train['train_number'] }} - {{ selected_train['train_name'] }}
+                    </h2>
+                    <p>
+                        {{ selected_train['source'] }} → {{ selected_train['destination'] }}
+                    </p>
+                </div>
+                <a class="button secondary" href="/train-route/{{ selected_train['id'] }}">Public View</a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            Stop
+                        </th>
+                        <th>
+                            Station
+                        </th>
+                        <th>
+                            Arrival
+                        </th>
+                        <th>
+                            Departure
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in stations %}
+                        <tr>
+                            <td>
+                                {{ s['stop_order'] }}
+                            </td>
+                            <td>
+                                <strong>{{ s['station_name'] }}</strong>
+                            </td>
+                            <td>
+                                {{ s['arrival'] or '-' }}
+                            </td>
+                            <td>
+                                {{ s['departure'] or '-' }}
+                            </td>
+                            <td>
+                                <a class="button small" href="/admin/routes/edit/{{ s['id'] }}">Edit</a> <a class="button small danger" href="/admin/routes/delete/{{ s['id'] }}" onclick="return confirm('Delete this station?')">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="form-card">
+            <h2>
+                Add Station
+            </h2>
+            <form method="post" action="/admin/routes/add" class="form-grid">
+                <input type="hidden" name="train_id" value="{{ selected_train['id'] }}">
+                <label>
+                    Station Name<input name="station_name" required>
+                </label>
+                <label>
+                    Stop Order<input type="number" name="stop_order" min="1" value="{{ (stations|length)+1 }}" required>
+                </label>
+                <label>
+                    Arrival<input type="time" name="arrival">
+                </label>
+                <label>
+                    Departure<input type="time" name="departure">
+                </label>
+                <button>
+                    Add Station
+                </button>
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}

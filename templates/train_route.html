@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Route & Timings - TTBS{% endblock %}
+{% block content %}
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">ROUTE & TIMINGS</p>
+            <h1>{{ train['train_number'] }} - {{ train['train_name'] }}</h1>
+            <p>{{ train['source'] }} → {{ train['destination'] }} · {{ train['duration'] }}</p>
+        </div>
+        <div class="button-row">
+            <a class="button secondary"
+               href="{{ url_for('trains', **search_params) }}">Back to Trains</a>
+            {% if search_params["date"] %}
+                <a class="button"
+                   href="{{ url_for('book', train_id=train['id'], date=search_params['date'], **{'class': search_params['class']}) }}">Book This Train</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="route-card">
+        <div class="card-header">
+            <div>
+                <h2>Via Stations</h2>
+                <p>Arrival and departure times for every stop.</p>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Station</th>
+                    <th>Arrival</th>
+                    <th>Departure</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in stations %}
+                    <tr>
+                        <td>{{ s['stop_order'] }}</td>
+                        <td><strong>{{ s['station_name'] }}</strong>{% if loop.first %}<small>Source</small>{% elif loop.last %}<small>Destination</small>{% endif %}</td>
+                        <td>{{ s['arrival'] or '-' }}</td>
+                        <td>{{ s['departure'] or '-' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="fare-grid route-fares">
+        <div class="fare-box"><span>SL</span><strong>₹{{ fares['sleeper'] }}</strong><small>Sleeper</small></div>
+        <div class="fare-box"><span>3A</span><strong>₹{{ fares['3A'] }}</strong><small>AC 3 Tier</small></div>
+        <div class="fare-box"><span>2A</span><strong>₹{{ fares['2A'] }}</strong><small>AC 2 Tier</small></div>
+        <div class="fare-box"><span>1A</span><strong>₹{{ fares['1A'] }}</strong><small>First AC</small></div>
+    </div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}{% block title %}Running Status - TTBS{% endblock %}{% block content %}
+<div class="status-search search-card">
+    <h2>Check Running Status</h2>
+    <form method="post" class="search-grid two">
+        <label>
+            Train Number<input name="train_number"
+       placeholder="12951"
+       value="{{ request.form.get('train_number', '') }}"
+       required></label><label>Journey Date<input type="date"
+       name="journey_date"
+       value="{{ request.form.get('journey_date', '') }}"
+       required></label><button>Check Status</button>
+    </form>
+</div>
+{% if train %}<div class="status-card"><div class="status-title"><div><span class="eyebrow">RUNNING STATUS</span><h1>{{ train['train_number'] }} - {{ train['train_name'] }}</h1><p>{{ train['source'] }} → {{ train['destination'] }}</p></div><a class="button secondary"
+   href="{{ url_for('train_route', train_id=train['id']) }}">View Full Route</a></div>
+    {% if position %}
+        <div class="status-grid"><div><span>Status</span><strong class="status-{{ position['state']|lower }}">{{ position['state'].replace('_', ' ') }}</strong></div><div><span>Current Position</span><strong>{% if position["state"] == "RUNNING" %}Between {{ position['current_station']['station_name'] }} and {{ position['next_station']['station_name'] }}{% elif position["current_station"] %}{{ position['current_station']['station_name'] }}{% else %}—{% endif %}</strong></div><div><span>Next Station</span><strong>{{ position['next_station']['station_name'] if position['next_station'] else '—' }}</strong></div><div><span>Next Station ETA</span><strong>{{ position['eta'] or '—' }}</strong></div></div>
+        {% if status and status["delay_minutes"]|int > 0 %}<div class="delay-banner">Delayed by <strong>{{ status['delay_minutes'] }} minutes</strong></div>{% endif %}
+        <div class="progress-box"><div><span>{% if position["state"] == "RUNNING" %}Progress to {{ position['next_station']['station_name'] }}{% else %}Journey Progress{% endif %}</span><strong>{{ position['progress'] }}%</strong></div><div class="progress-track"><div class="progress-fill" style="width: {{ position['progress'] }}%"></div></div></div>
+        <div class="timeline"><h2>Route & Timings</h2>{% for station in stations %}{% set current = position['current_station'] and position['current_station']['id'] == station['id'] %}{% set passed = position['current_station'] and station['stop_order'] < position['current_station']['stop_order'] %}<div class="timeline-row {% if current %}current{% elif passed %}passed{% endif %}"><div class="timeline-marker">{% if passed %}✓{% elif current %}●{% else %}○{% endif %}</div><div><strong>{{ station['station_name'] }}</strong><small>Arrival: {{ station['arrival'] or '-' }} &nbsp; | &nbsp; Departure: {{ station['departure'] or '-' }}</small></div></div>{% endfor %}</div>
+        <div class="last-updated">{% if status %}Status data updated: {{ status['last_updated'] }}{% else %}Position calculated from timetable.{% endif %}</div>
+    {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

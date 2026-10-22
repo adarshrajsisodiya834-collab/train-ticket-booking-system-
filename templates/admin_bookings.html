@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}
+Admin Bookings - TTBS
+{% endblock %}
+{% block content %}
+    <div class="admin-top">
+        <div>
+            <p class="eyebrow">
+                BOOKING OPERATIONS
+            </p>
+            <h1>
+                Bookings
+            </h1>
+            <p>
+                Search and review bookings created in TTBS.
+            </p>
+        </div>
+    </div>
+    <div class="admin-tabs">
+        <a href="/admin/dashboard">Overview</a><a href="/admin/running-status">Running Status</a><a href="/admin/routes">Routes</a><a class="active" href="/admin/bookings">Bookings</a><a href="/admin/add-train">Add Train</a>
+    </div>
+    <div class="date-filter">
+        <form method="get">
+            <label>
+                PNR<input name="pnr" value="{{ pnr }}" placeholder="Search PNR">
+            </label>
+            <button>
+                Search
+            </button>
+        </form>
+    </div>
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        PNR
+                    </th>
+                    <th>
+                        Train
+                    </th>
+                    <th>
+                        Passenger
+                    </th>
+                    <th>
+                        User
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Class
+                    </th>
+                    <th>
+                        Seat
+                    </th>
+                    <th>
+                        Fare
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in bookings %}
+                    <tr>
+                        <td>
+                            <strong>{{ b['pnr'] }}</strong>
+                        </td>
+                        <td>
+                            {{ b['train_number'] }}<br><small>{{ b['train_name'] }}</small>
+                        </td>
+                        <td>
+                            {{ b['passenger_name'] or '—' }}
+                        </td>
+                        <td>
+                            {{ b['user_name'] }}<br><small>{{ b['email'] }}</small>
+                        </td>
+                        <td>
+                            {{ b['journey_date'] }}
+                        </td>
+                        <td>
+                            {{ b['travel_class'] }}
+                        </td>
+                        <td>
+                            {{ b['seat_number'] or '—' }}
+                        </td>
+                        <td>
+                            ₹{{ b['total_fare'] }}
+                        </td>
+                        <td>
+                            <span class="badge {{ b['status']|lower }}">{{ b['status'] }}</span>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="9">
+                            No bookings found.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

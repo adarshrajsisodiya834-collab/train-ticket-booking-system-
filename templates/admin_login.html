@@ -1,0 +1,25 @@
+﻿{% extends "base.html" %}
+{% block title %}
+Admin Login - TTBS
+{% endblock %}
+{% block content %}
+    <div class="auth-card">
+        <p class="eyebrow">
+            ADMIN
+        </p>
+        <h1>
+            Operations Login
+        </h1>
+        <form method="post">
+            <label>
+                Username<input name="username" required>
+            </label>
+            <label>
+                Password<input type="password" name="password" required>
+            </label>
+            <button>
+                Login
+            </button>
+        </form>
+    </div>
+{% endblock %}

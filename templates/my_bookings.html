@@ -1,0 +1,92 @@
+﻿{% extends "base.html" %}
+{% block title %}
+My Bookings - TTBS
+{% endblock %}
+{% block content %}
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">
+                ACCOUNT
+            </p>
+            <h1>
+                My Bookings
+            </h1>
+        </div>
+    </div>
+    {% if bookings %}
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            PNR
+                        </th>
+                        <th>
+                            Train
+                        </th>
+                        <th>
+                            Journey
+                        </th>
+                        <th>
+                            Passenger
+                        </th>
+                        <th>
+                            Class
+                        </th>
+                        <th>
+                            Seat
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in bookings %}
+                        <tr>
+                            <td>
+                                {{ b['pnr'] }}
+                            </td>
+                            <td>
+                                {{ b['train_number'] }}<br><small>{{ b['train_name'] }}</small>
+                            </td>
+                            <td>
+                                {{ b['journey_date'] }}
+                            </td>
+                            <td>
+                                {{ b['passenger_name'] }}
+                            </td>
+                            <td>
+                                {{ b['travel_class'] }}
+                            </td>
+                            <td>
+                                {{ b['seat_number'] }}
+                            </td>
+                            <td>
+                                <span class="badge {{ b['status']|lower }}">{{ b['status'] }}</span>
+                            </td>
+                            <td>
+                                <a class="button small" href="/ticket/{{ b['id'] }}">Ticket</a>
+                                {% if b["status"] == "CONFIRMED" %}
+                                    <form method="post" action="/cancel-booking/{{ b['id'] }}" class="inline-form">
+                                        <button class="button danger small">
+                                            Cancel
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-card">
+            <h2>
+                No bookings yet
+            </h2>
+        </div>
+    {% endif %}
+{% endblock %}
