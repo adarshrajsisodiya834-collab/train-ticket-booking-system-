@@ -38,7 +38,7 @@ py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-python app.py
+py -3 app.py
 ```
 
 If PowerShell blocks virtual-environment activation, either allow scripts for
